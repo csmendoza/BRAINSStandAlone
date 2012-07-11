@@ -53,8 +53,7 @@ if(NOT DEFINED ${extProjName}_DIR OR NOT DEFINED ATLAS_NAME)
   set(ATLAS_URL http://www.psychiatry.uiowa.edu/users/brainstestdata/Atlas_${ATLAS_VERSION}.tar.gz)
   set(ATLAS_NAME Atlas/Atlas_${ATLAS_VERSION})
   ExternalProject_add(${proj}
-    URL ${ATLAS_URL}
-    SOURCE_DIR ${proj}
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/ReferenceAtlas
     BINARY_DIR ${proj}-build
     UPDATE_COMMAND ""
     CMAKE_GENERATOR ${gen}
@@ -63,11 +62,11 @@ if(NOT DEFINED ${extProjName}_DIR OR NOT DEFINED ATLAS_NAME)
       ${COMMON_EXTERNAL_PROJECT_ARGS}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
+      -DCMAKE_MODULE_PATH:STRING=${CMAKE_MODULE_PATH}
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}
       ${${proj}_CMAKE_OPTIONS}
-    INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
-    BUILD_COMMAND ""
     )
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
 else()

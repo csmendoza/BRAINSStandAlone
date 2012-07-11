@@ -1,0 +1,435 @@
+<!--
+    <image multiple="true">
+      <name>priorsList</name>
+      <longflag>priorsList</longflag>
+      <description> The list of full paths to the priors to be used.  The last prior MUST be the background.  Number of input should same to the number of priorsList</description>
+      <default></default>
+    </image>
+    <double-vector>
+      <name>priorsWeightList</name>
+      <longflag deprecatedalias="priorWeightsList">priorsWeightList</longflag>
+      <description>Weightings for each of the priors. Number of input should same to the number of priorsList</description>
+      <default>1.0,1.0,1.0,1.0</default>
+    </double-vector>
+    <integer-vector>
+      <name>priorGaussianClusterCountList</name>
+      <longflag>priorGaussianClusterCountList</longflag>
+      <description>This specified how many distinct clusters should be estimated for the region defined by each prior. Number of input should same to the number of priorsList.  It is recommended to set them all to one except for the background prior. Three seems to work well to account for dura, fat, skull etc.</description>
+      <default>1,1,1,3</default>
+    </integer-vector>
+    <integer-vector>
+      <name>priorUseForBiasList</name>
+      <longflag>priorUseForBiasList</longflag>
+      <description>This vector indicates which priors should be used for bias estimation. Number of input should same to the number of priorsList</description>
+      <default>1,1,1,1</default>
+    </integer-vector>
+    <image multiple="true">
+      <name>templateVolumes</name>
+      <longflag>templateVolumes</longflag>
+      <description>The anatomical template volume that corresponds in physical space to the priors.  It is used for registering the priors to this data set.</description>
+      <label>Template Volume</label>
+      <default></default>
+      <channel>input</channel>
+    </image>
+    <image>
+      <name>templateMask</name>
+      <longflag>templateMask</longflag>
+      <description>A binary image that corresponds to the brain region for all template Volumes in the atlas.</description>
+      <label>Template BrainMask</label>
+      <default></default>
+      <channel>input</channel>
+    </image>
+    <image>
+      <name>templateHeadRegion</name>
+      <longflag>templateHeadRegion</longflag>
+      <description>A binary image that corresponds to a conservative head region for all template Volumes in the atlas.  The registerd version of this region defines where bias correction should be applied, and it will act to clip the bias corrected images, so it should really be quite conservative.</description>
+      <label>Template Head Region</label>
+      <default></default>
+      <channel>input</channel>
+    </image>
+-->
+<Atlas>
+
+  <AtlasImage>
+    <type>T1</type>
+    <filename>@ATLAS_DIRECTORY@/template_t1.nii.gz</filename>
+  </AtlasImage>
+
+  <AtlasImage>
+    <type>T2</type>
+    <filename>@ATLAS_DIRECTORY@/template_t2.nii.gz</filename>
+  </AtlasImage>
+
+  <AtlasImage>
+    <type>FLAIR</type>
+    <filename>@ATLAS_DIRECTORY@/template_t2.nii.gz</filename>
+  </AtlasImage>
+
+  <AtlasImage>
+    <type>OTHER</type>
+    <filename>@ATLAS_DIRECTORY@/template_t1.nii.gz</filename>
+  </AtlasImage>
+
+
+  <BrainMask>
+    <filename>@ATLAS_DIRECTORY@/template_brain.nii.gz</filename>
+  </BrainMask>
+
+  <HeadRegion>
+    <filename>@ATLAS_DIRECTORY@/template_headregion.nii.gz</filename>
+  </HeadRegion>
+
+  <Prior>
+    <type>WM</type>
+    <filename>@ATLAS_DIRECTORY@/ALLPVWM.nii.gz</filename>
+    <Weight>1</Weight>
+    <GaussianClusterCount>1</GaussianClusterCount>
+    <UseForBias>1</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>1</LabelCode>
+    <bounds>
+      <type>T1</type>
+      <lower>0.50</lower>
+      <upper>1.0</upper>
+    </bounds>
+    <bounds>
+      <type>T2</type>
+      <lower>0.05</lower>
+      <upper>0.70</upper>
+    </bounds>
+    <bounds>
+      <type>FLAIR</type>
+      <lower>0.01</lower>
+      <upper>0.99</upper>
+    </bounds>
+    <bounds>
+      <type>OTHER</type>
+      <lower>0.0</lower>
+      <upper>1.0</upper>
+    </bounds>
+  </Prior>
+
+  <Prior>
+    <type>SURFGM</type>
+    <filename>@ATLAS_DIRECTORY@/ALLPVSURFGM.nii.gz</filename>
+    <Weight>1</Weight>
+    <GaussianClusterCount>1</GaussianClusterCount>
+    <UseForBias>1</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>2</LabelCode>
+    <bounds>
+      <type>T1</type>
+      <lower>0.04</lower>
+      <upper>0.75</upper>
+    </bounds>
+    <bounds>
+      <type>T2</type>
+      <lower>0.25</lower>
+      <upper>0.96</upper>
+    </bounds>
+    <bounds>
+      <type>FLAIR</type>
+      <lower>0.01</lower>
+      <upper>0.99</upper>
+    </bounds>
+    <bounds>
+      <type>OTHER</type>
+      <lower>0.0</lower>
+      <upper>1.0</upper>
+    </bounds>
+  </Prior>
+
+  <Prior>
+  <type>BGM</type>
+  <filename>@ATLAS_DIRECTORY@/ALLPVBASALTISSUE.nii.gz</filename>
+  <Weight>1</Weight>
+  <GaussianClusterCount>1</GaussianClusterCount>
+  <UseForBias>0</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>3</LabelCode>
+  <bounds>
+    <type>T1</type>
+    <lower>0.05</lower>
+    <upper>0.95</upper>
+  </bounds>
+  <bounds>
+    <type>T2</type>
+    <lower>0.15</lower>
+    <upper>0.97</upper>
+  </bounds>
+  <bounds>
+    <type>FLAIR</type>
+    <lower>0.01</lower>
+    <upper>0.99</upper>
+  </bounds>
+  <bounds>
+    <type>OTHER</type>
+    <lower>0.0</lower>
+    <upper>1.0</upper>
+  </bounds>
+</Prior>
+  <Prior>
+  <type>CRBLGM</type>
+  <filename>@ATLAS_DIRECTORY@/ALLPVCRBLGM.nii.gz</filename>
+  <Weight>1</Weight>
+  <GaussianClusterCount>1</GaussianClusterCount>
+  <UseForBias>1</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>11</LabelCode>
+  <bounds>
+    <type>T1</type>
+    <lower>0.03</lower>
+    <upper>0.90</upper>
+  </bounds>
+  <bounds>
+    <type>T2</type>
+    <lower>0.02</lower>
+    <upper>0.99</upper>
+  </bounds>
+  <bounds>
+    <type>FLAIR</type>
+    <lower>0.01</lower>
+    <upper>0.99</upper>
+  </bounds>
+  <bounds>
+    <type>OTHER</type>
+    <lower>0.0</lower>
+    <upper>1.0</upper>
+  </bounds>
+</Prior>
+  <Prior>
+    <type>CRBLWM</type>
+    <filename>@ATLAS_DIRECTORY@/ALLPVCRBLWM.nii.gz</filename>
+    <Weight>1.5</Weight>
+    <GaussianClusterCount>1</GaussianClusterCount>
+    <UseForBias>1</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>12</LabelCode>
+    <bounds>
+      <type>T1</type>
+      <lower>0.10</lower>
+      <upper>1.0</upper>
+    </bounds>
+    <bounds>
+      <type>T2</type>
+      <lower>0.03</lower>
+      <upper>0.90</upper>
+    </bounds>
+    <bounds>
+      <type>FLAIR</type>
+      <lower>0.01</lower>
+      <upper>0.99</upper>
+    </bounds>
+    <bounds>
+      <type>OTHER</type>
+      <lower>0.0</lower>
+      <upper>1.0</upper>
+    </bounds>
+  </Prior>
+<Prior>
+<type>CSF</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVCSF.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>1</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>4</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.00</lower>
+  <upper>0.60</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0.20</lower>
+  <upper>1.0</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.0</lower>
+  <upper>0.5</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>1.0</upper>
+</bounds>
+</Prior>
+<Prior>
+<type>VB</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVVB.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>0</UseForBias>
+<IsForegroundPrior>1</IsForegroundPrior>
+<LabelCode>5</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.04</lower>
+  <upper>0.75</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0.0</lower>
+  <upper>0.20</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.0</lower>
+  <upper>0.9</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>1.0</upper>
+</bounds>
+</Prior>
+<Prior>
+<type>NOTCSF</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVNOTCSF.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>0</UseForBias>
+<IsForegroundPrior>0</IsForegroundPrior>
+<LabelCode>6</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.0</lower>
+  <upper>0.60</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0.20</lower>
+  <upper>1.0</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.0</lower>
+  <upper>0.5</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>1.0</upper>
+</bounds>
+</Prior>
+<Prior>
+<type>NOTGM</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVNOTGM.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>0</UseForBias>
+<IsForegroundPrior>0</IsForegroundPrior>
+<LabelCode>7</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.15</lower>
+  <upper>0.90</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0.35</lower>
+  <upper>1.0</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.1</lower>
+  <upper>0.99</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>1.0</upper>
+</bounds>
+</Prior>
+<Prior>
+<type>NOTWM</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVNOTWM.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>0</UseForBias>
+<IsForegroundPrior>0</IsForegroundPrior>
+<LabelCode>8</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.40</lower>
+  <upper>1.0</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0.10</lower>
+  <upper>0.85</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.01</lower>
+  <upper>0.99</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>1.0</upper>
+</bounds>
+</Prior>
+
+<Prior>
+<type>NOTVB</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVNOTVB.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>0</UseForBias>
+<IsForegroundPrior>0</IsForegroundPrior>
+<LabelCode>9</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.15</lower>
+  <upper>0.90</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0.0</lower>
+  <upper>0.30</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.0</lower>
+  <upper>0.5</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>1.0</upper>
+</bounds>
+</Prior>
+
+<Prior>
+<type>AIR</type>
+<filename>@ATLAS_DIRECTORY@/ALLPVAIR.nii.gz</filename>
+<Weight>1</Weight>
+<GaussianClusterCount>1</GaussianClusterCount>
+<UseForBias>0</UseForBias>
+<IsForegroundPrior>0</IsForegroundPrior>
+<LabelCode>0</LabelCode>
+<bounds>
+  <type>T1</type>
+  <lower>0.0</lower>
+  <upper>0.10</upper>
+</bounds>
+<bounds>
+  <type>T2</type>
+  <lower>0</lower>
+  <upper>0.10</upper>
+</bounds>
+<bounds>
+  <type>FLAIR</type>
+  <lower>0.0</lower>
+  <upper>0.10</upper>
+</bounds>
+<bounds>
+  <type>OTHER</type>
+  <lower>0.0</lower>
+  <upper>0.10</upper>
+</bounds>
+</Prior>
+
+</Atlas>
