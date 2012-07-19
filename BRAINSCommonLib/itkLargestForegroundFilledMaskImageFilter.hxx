@@ -20,7 +20,8 @@
 #include <itkMinimumMaximumImageFilter.h>
 #include <itkScalarImageToHistogramGenerator.h>
 // Not this:   #include <itkOtsuMultipleThresholdsCalculator.h>
-#include <itkOtsuThresholdImageCalculator.h>
+#include <itkImageToHistogramFilter.h>
+#include <itkOtsuThresholdCalculator.h>
 #include <itkCastImageFilter.h>
 
 namespace itk
@@ -134,17 +135,24 @@ LargestForegroundFilledMaskImageFilter<TInputImage, TOutputImage>
     {
     //##The Otsu thresholding stuff below should not be part of the new class,
     // it shout really be a separate function.
-    typedef OtsuThresholdImageCalculator<TInputImage> OtsuImageCalcType;
+    typedef itk::Statistics::ImageToHistogramFilter<TInputImage>  HistogramGeneratorType;
+    typename HistogramGeneratorType::Pointer histGenerator = HistogramGeneratorType::New();
+    histGenerator->SetInput( this->GetInput() );
+    typename HistogramGeneratorType::HistogramSizeType hsize(1);
+    hsize[0] = 128; //For consistency and backwards compatibility with ITKv3 defaults.
+    histGenerator->SetHistogramSize( hsize );
+    histGenerator->SetAutoMinimumMaximum( true );
+
+    typedef OtsuThresholdCalculator<typename HistogramGeneratorType::HistogramType,double> OtsuImageCalcType;
     typename OtsuImageCalcType::Pointer OtsuImageCalc = OtsuImageCalcType::New();
-    OtsuImageCalc->SetImage( this->GetInput() );
-    OtsuImageCalc->Compute();
-    typename TInputImage::PixelType otsuThreshold = OtsuImageCalc->GetThreshold();
+    OtsuImageCalc->SetInput( histGenerator->GetOutput() );
+    OtsuImageCalc->Update();
+    const double otsuThreshold = OtsuImageCalc->GetThreshold();
     // std::cout << "whole-image-based otsuThreshold was: " << otsuThreshold <<
     // std::endl;
 
-    typename TInputImage::PixelType otsuThresholdResult =
-      static_cast<typename TInputImage::PixelType>
-      ( m_ThresholdCorrectionFactor * static_cast<double>( otsuThreshold ) );
+    const typename TInputImage::PixelType & otsuThresholdResult =
+      static_cast<typename TInputImage::PixelType>( m_ThresholdCorrectionFactor * otsuThreshold );
     threshold_low_foreground = otsuThresholdResult;
     }
 
